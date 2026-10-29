@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duna Estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: pinned cinematic hero scrubbed by scroll, then full-bleed sections, floating pill nav. Single committed look (photographic, dune greys + moss + walnut). */
+:root{
+  --ink:#0f1110;        /* deep text / nav pill */
+  --paper:#efedea;      /* testimonial ground, cool off-white */
+  --moss:#5d6b58;       /* showroom green */
+  --walnut:#4a3d31;     /* award panel */
+  --mist:#b9bdb3;       /* star + muted lines */
+  --white:#fbfbf9;
+  --font-display:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --gut-l:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--white);font-family:var(--font-display);font-size:15px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img,video{display:block;max-width:100%}
+.mono{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+
+/* ---------- Top bar ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:center;
+  padding-top:calc(18px + env(safe-area-inset-top,0px));padding-bottom:18px;padding-left:var(--gut-l);padding-right:var(--gut-r);pointer-events:none;mix-blend-mode:difference}
+.topbar>*{pointer-events:auto}
+.brand{font-weight:600;letter-spacing:-.02em;font-size:15px;text-decoration:none;opacity:0;transition:opacity .4s}
+body.past-hero .brand{opacity:1}
+.quote-btn{display:flex;align-items:center;gap:8px;text-decoration:none;background:none;border:0;color:var(--white);cursor:pointer;padding:6px 0}
+.quote-btn::before{content:"";width:6px;height:6px;background:currentColor;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+
+/* ---------- Floating pill nav ---------- */
+.pill{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:0;background:rgba(15,17,16,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);border-radius:4px;height:40px;width:min(250px,calc(100vw - 32px))}
+.pill button{background:none;border:0;color:var(--white);height:100%;width:44px;display:grid;place-items:center;cursor:pointer}
+.pill .label{flex:1;text-align:center;overflow:hidden;height:14px;position:relative}
+.pill .label span{display:block;transition:transform .5s cubic-bezier(.7,0,.2,1)}
+.pill svg{width:14px;height:14px}
+.menu{position:fixed;inset:0;z-index:45;background:rgba(15,17,16,.94);backdrop-filter:blur(10px);display:flex;flex-direction:column;justify-content:center;gap:4px;
+  padding-left:var(--gut-l);padding-right:var(--gut-r);opacity:0;pointer-events:none;transition:opacity .45s}
+.menu.open{opacity:1;pointer-events:auto}
+.menu a{font-size:clamp(40px,9vw,110px);letter-spacing:-.055em;line-height:.98;text-decoration:none;width:fit-content;margin-inline:auto;transform:translateY(30px);opacity:0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .6s,color .2s;color:var(--white)}
+.menu.open a{transform:none;opacity:1}
+.menu a:hover{color:var(--mist)}
+.menu.open a:nth-child(2){transition-delay:.05s}.menu.open a:nth-child(3){transition-delay:.1s}.menu.open a:nth-child(4){transition-delay:.15s}.menu.open a:nth-child(5){transition-delay:.2s}
+
+/* ---------- Hero (pinned, video scrubbed) ---------- */
+.hero{position:relative;height:420vh}
+.hero-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.hero-stage video,.hero-stage .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,12,.35),rgba(10,12,12,0) 30%,rgba(10,12,12,0) 65%,rgba(10,12,12,.45))}
+.phrase{position:absolute;inset:0;z-index:2;pointer-events:none}
+.word{position:absolute;font-size:clamp(52px,10.5vw,168px);line-height:.9;font-weight:500;letter-spacing:-.065em;white-space:nowrap;
+  padding-top:calc(28px + env(safe-area-inset-top,0px))}
+.word .ch{display:inline-block;will-change:transform,opacity,filter}
+#mist{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.w-tl{top:0;left:var(--gut-l)}
+.w-tr{top:0;right:var(--gut-r)}
+.w-mr{top:50%;right:var(--gut-r);transform:translateY(-60%)}
+.w-ml{top:50%;left:var(--gut-l);transform:translateY(-60%)}
+.w-bl{bottom:calc(20px + env(safe-area-inset-bottom,0px));left:var(--gut-l)}
+.w-br{bottom:calc(20px + env(safe-area-inset-bottom,0px));right:var(--gut-r)}
+.hero-note{position:absolute;z-index:3;bottom:calc(36px + env(safe-area-inset-bottom,0px));max-width:220px;font-size:11px;line-height:1.45;color:rgba(255,255,255,.78);transition:opacity .6s}
+.hero-note.r{right:var(--gut-r);text-align:right}
+.hero-note.l{left:var(--gut-l)}
+.hero-note:not(.on){opacity:0}
+.scrub-bar{position:absolute;z-index:3;right:calc(var(--gut-r) - 8px);top:50%;width:2px;height:90px;transform:translateY(-50%);background:rgba(255,255,255,.2)}
+.scrub-bar i{position:absolute;left:0;top:0;width:100%;background:var(--white);height:0}
+
+/* ---------- Award ---------- */
+.award{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);min-height:92vh;position:relative}
+.award-card{background:linear-gradient(160deg,#6a5848,var(--walnut) 55%,#2c241d);display:flex;flex-direction:column;justify-content:space-between;
+  padding-block:36px 90px;padding-left:var(--gut-l);padding-right:28px;gap:40px}
+.award-card h2{font-size:clamp(64px,9vw,140px);font-weight:500;letter-spacing:-.06em;line-height:.9;margin:0;position:relative;width:fit-content}
+.award-card h2 sup{font-size:.2em;position:absolute;top:.1em;right:-.45em;letter-spacing:0}
+.award-card p{max-width:34ch;font-size:13px;color:rgba(255,255,255,.75);margin:14px 0 0}
+.award-img{position:relative;overflow:hidden}
+.award-img img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);will-change:transform}
+.award-stats{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:18px;padding-left:var(--gut-l);padding-right:var(--gut-r);pointer-events:none}
+.stat b{display:block;font-size:clamp(54px,7vw,104px);font-weight:400;letter-spacing:-.06em;line-height:.9;font-variant-numeric:tabular-nums}
+.stat .mono{font-size:9.5px;color:rgba(255,255,255,.75)}
+.stat.r{text-align:right}
+
+/* ---------- Star / numbers ---------- */
+.star-sec{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
+.star-sec > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9)}
+.star-sec .inner{position:absolute;inset:0;padding-block:28px 26px;padding-left:var(--gut-l);padding-right:var(--gut-r);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr auto}
+.star-sec h3{font-weight:500;font-size:14px;line-height:1.15;text-transform:uppercase;margin:0;max-width:22ch}
+.star{position:absolute;left:50%;top:50%;width:min(56vmin,520px);aspect-ratio:1;translate:-50% -50%;color:var(--mist);will-change:transform}
+.star svg{width:100%;height:100%;fill:currentColor}
+.star-sec .tr{justify-self:end;text-align:right}
+.star-sec .bl{grid-row:3;align-self:end}
+.star-sec .br{grid-row:3;grid-column:2;justify-self:end;align-self:end;text-align:right}
+
+/* ---------- Showroom ---------- */
+.showroom{background:var(--moss);position:relative;height:240vh}
+.show-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+.show-tag{position:absolute;top:26px;left:var(--gut-l);display:flex;gap:8px;align-items:center;z-index:3}
+.show-tag::before{content:"";width:6px;height:6px;background:currentColor;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.show-frame{position:relative;width:66vw;height:56vh;overflow:hidden;will-change:width,height}
+.show-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.show-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0) 55%)}
+.show-copy{position:absolute;z-index:2;left:var(--gut-l);top:50%;transform:translateY(-50%);font-size:clamp(16px,1.9vw,26px);line-height:1.12;text-transform:uppercase;max-width:20ch;font-weight:500}
+.show-addr{position:absolute;z-index:2;right:var(--gut-r);top:50%;transform:translateY(-50%);text-align:right;font-size:11px;line-height:1.5;color:rgba(255,255,255,.8)}
+.show-addr .mono{display:block;margin-bottom:6px;font-size:9.5px}
+
+/* ---------- Testimonial ---------- */
+.testi{background:var(--paper);color:var(--ink);padding-block:16vh 12vh;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.testi-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:32px;max-width:1300px;margin-inline:auto}
+.testi-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:grayscale(1) contrast(1.05)}
+.testi blockquote{margin:0;font-size:clamp(22px,2.7vw,40px);line-height:1.08;letter-spacing:-.025em;text-transform:uppercase;font-weight:500;text-wrap:balance}
+.testi blockquote .w{display:inline-block}
+.testi cite{display:block;margin-top:38px;font-style:normal}
+.testi cite b{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;font-weight:500}
+.testi cite span{font-size:12px;color:#5b605a}
+
+/* ---------- Services ---------- */
+.services{background:var(--paper);color:var(--ink);padding-block:0 14vh;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.svc{max-width:1300px;margin-inline:auto;border-top:1px solid #c9c8c2}
+.svc-row{display:grid;grid-template-columns:70px minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:baseline;padding-block:26px;border-bottom:1px solid #c9c8c2;transition:padding .4s}
+.svc-row:hover{padding-block:36px}
+.svc-row h4{margin:0;font-size:clamp(26px,3.4vw,48px);font-weight:500;letter-spacing:-.05em;line-height:1}
+.svc-row p{margin:0;font-size:14px;color:#3c403b;max-width:52ch}
+.svc-row .mono{color:#6a6e67}
+
+/* ---------- Footer ---------- */
+.foot{position:relative;height:100vh;height:100svh;min-height:520px;overflow:hidden}
+.foot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.foot::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,17,16,.15),rgba(15,17,16,.05) 40%,rgba(15,17,16,.55));z-index:1}
+.foot-top{position:absolute;z-index:2;top:28px;left:var(--gut-l);right:var(--gut-r);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:12px}
+.foot-top div{display:flex;flex-direction:column;gap:2px}
+.foot-top .mono{margin-bottom:6px;color:rgba(255,255,255,.7)}
+.foot h2{position:absolute;z-index:2;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:clamp(64px,17vw,290px);font-weight:500;letter-spacing:-.075em;line-height:.8;white-space:nowrap}
+.foot h2 .ch{display:inline-block}
+.foot h2{overflow:hidden;padding-bottom:.06em}
+
+/* ---------- Responsive ---------- */
+@media (max-width:760px){
+  .award{grid-template-columns:1fr;min-height:0}
+  .award-card{padding-block:28px 40px}
+  .award-img{height:70vh}
+  .show-frame{width:86vw;height:52vh}
+  .show-copy{max-width:14ch}
+  .show-addr{top:auto;bottom:80px;transform:none}
+  .testi-grid{grid-template-columns:1fr}
+  .svc-row{grid-template-columns:1fr;gap:10px}
+  .w-mr,.w-ml{top:46%}
+  .hero-note{display:none}
+  .scrub-bar{display:none}
+  .star-sec .inner{padding-block:28px 76px}
+  .award-stats{padding-bottom:70px}
+  .w-bl,.w-br{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .word{font-size:clamp(52px,15vw,90px)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  .hero{height:auto}.hero-stage{position:relative}
+  .showroom{height:auto}.show-stage{position:relative}
+}
+</style>
+</head>
+<body>
+
+
+<header class="topbar">
+  <a class="brand" href="#inicio">Duna Estudio</a>
+  <a class="quote-btn mono" href="#contacto">Pedir presupuesto</a>
+</header>
+
+<nav class="pill" aria-label="Navegación">
+  <button type="button" aria-label="Volver al inicio" id="pillHome">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+  </button>
+  <div class="label mono" aria-live="polite"><span id="pillLabel">Inicio</span></div>
+  <button type="button" aria-label="Abrir menú" aria-expanded="false" id="menuBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" id="menuIcon"><path d="M4 8h16M4 16h16"/></svg>
+  </button>
+</nav>
+
+<div class="menu" id="menu">
+  <a href="#inicio">Inicio</a>
+  <a href="#proyecto">Proyecto</a>
+  <a href="#cifras">Estudio</a>
+  <a href="#showroom">Showroom</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="inicio" data-label="Inicio">
+    <div class="hero-stage">
+      <img class="poster" src="exterior.jpg" alt="Cabaña de madera con fachada de vidrio frente al mar al atardecer">
+      <video id="heroVideo" src="casa.mp4" muted playsinline preload="auto" poster="exterior.jpg" aria-hidden="true"></video>
+      <canvas id="mist" aria-hidden="true"></canvas>
+
+      <div class="phrase on" data-i="0">
+        <span class="word w-tl">Armonía</span>
+        <span class="word w-mr">en</span>
+        <span class="word w-bl">Casa</span>
+      </div>
+      <div class="phrase" data-i="1">
+        <span class="word w-tr">Precisión</span>
+        <span class="word w-ml">en el</span>
+        <span class="word w-br">Detalle</span>
+      </div>
+      <div class="phrase" data-i="2">
+        <span class="word w-tl">Exquisita</span>
+        <span class="word w-mr">por</span>
+        <span class="word w-br">Naturaleza</span>
+      </div>
+
+      <p class="hero-note r on" data-i="0">Un viaje cinematográfico por la arquitectura: formas esenciales, vidrio a medida y espacios minimalistas para vivir junto a la costa.</p>
+      <p class="hero-note l" data-i="1">Equilibrio entre transparencia estructural, carpintería de primera y vidrio de alto rendimiento hecho a medida.</p>
+      <p class="hero-note l" data-i="2">Traemos el paisaje al interior: límites visuales difusos y refugios cálidos llenos de luz.</p>
+      <div class="scrub-bar" aria-hidden="true"><i id="scrubFill"></i></div>
+    </div>
+  </section>
+
+  <!-- AWARD -->
+  <section class="award" id="proyecto" data-label="Proyecto">
+    <div class="award-card">
+      <p class="mono" style="margin:0;color:var(--white);font-size:11px;line-height:1.5">Proyecto premiado<br>2026</p>
+      <div>
+        <h2>MAREA<sup>®</sup></h2>
+        <p>Nuestra última obra en la costa: una cabaña de madera quemada y vidrio de suelo a techo, abierta a las dunas y al fuego del atardecer.</p>
+      </div>
+    </div>
+    <div class="award-img"><img src="interior-2.jpg" alt="Salón interior con sofá de lino, paneles de madera y lámpara de globo" id="awardImg"></div>
+    <div class="award-stats">
+      <div class="stat"><b data-count="7">7</b><span class="mono">Años de experiencia</span></div>
+      <div class="stat r"><b data-count="22">22</b><span class="mono">Colaboraciones</span></div>
+    </div>
+  </section>
+
+  <!-- STAR / NUMBERS -->
+  <section class="star-sec" id="cifras" data-label="Estudio">
+    <img src="interior-1.jpg" alt="Vista del salón a través de la fachada de vidrio">
+    <div class="star" id="star" aria-hidden="true">
+      <svg viewBox="0 0 100 100"><path d="M50 0 C53 32 68 47 100 50 C68 53 53 68 50 100 C47 68 32 53 0 50 C32 47 47 32 50 0Z"/></svg>
+    </div>
+    <div class="inner">
+      <h3>Tu imaginación, convertida en espacio</h3>
+      <div class="stat tr"><b data-count="299">299</b><span class="mono">Proyectos terminados</span></div>
+      <div class="stat bl"><b data-count="9">9</b><span class="mono">Años de experiencia</span></div>
+      <div class="stat br"><b data-count="31">31</b><span class="mono">Colaboraciones</span></div>
+    </div>
+  </section>
+
+  <!-- SHOWROOM -->
+  <section class="showroom" id="showroom" data-label="Showroom">
+    <div class="show-stage">
+      <span class="show-tag mono">Showroom</span>
+      <div class="show-frame" id="showFrame">
+        <img src="interior-1.jpg" alt="Interior del showroom con cocina de madera y sofá modular">
+      </div>
+      <p class="show-copy">Un lugar donde la precisión y la creatividad se encuentran</p>
+      <div class="show-addr"><span class="mono">Dirección</span>Paseo de las Dunas 25, Nave 11<br>39300 Costa Norte, España</div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testi" data-label="Opiniones">
+    <div class="testi-grid">
+      <img src="fachada.jpg" alt="Fachada de la cabaña sobre la arena">
+      <div>
+        <blockquote id="quote">Diseño y calidad en cada junta. Trabajar con Duna fue sencillo de principio a fin: entendieron el terreno, el viento y la luz, y nos entregaron una casa que parece haber estado siempre en esa playa.</blockquote>
+        <cite><b>Lucía Arrieta</b><span>Propietaria, Casa Marea</span></cite>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" data-label="Servicios">
+    <div class="svc">
+      <div class="svc-row"><span class="mono">Fase 1</span><h4>Estudio del lugar</h4><p>Analizamos orientación, viento, mareas y vistas antes de trazar una sola línea.</p></div>
+      <div class="svc-row"><span class="mono">Fase 2</span><h4>Proyecto y licencias</h4><p>Planos, renders y la tramitación completa con el ayuntamiento.</p></div>
+      <div class="svc-row"><span class="mono">Fase 3</span><h4>Obra y carpintería</h4><p>Estructura de madera, vidrio a medida y acabados hechos por nuestro propio taller.</p></div>
+      <div class="svc-row"><span class="mono">Fase 4</span><h4>Interiorismo</h4><p>Mobiliario, iluminación y textiles pensados para la misma luz que entra por la fachada.</p></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot" id="contacto" data-label="Contacto">
+    <img src="exterior.jpg" alt="Cabaña iluminada junto al agua al anochecer">
+    <div class="foot-top">
+      <div><span class="mono">Contacto</span><span>hola@dunaestudio.es</span><span>+34 942 000 123</span></div>
+      <div><span class="mono">Estudio</span><span>Paseo de las Dunas 25</span><span>Costa Norte, España</span></div>
+      <div><span class="mono">Síguenos</span><span>Instagram</span><span>Pinterest</span></div>
+    </div>
+    <h2 id="footTitle">Duna Estudio</h2>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(() => {
+  const { animate, inView, stagger } = window.Motion;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ease = [0.2, 0.7, 0.2, 1];
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  // Scroll-linked progress (0..1) for an element. 'pin' = sticky section (start start → end end), 'pass' = enters bottom → leaves top.
+  const tracks = [];
+  const track = (el, mode, cb) => tracks.push({ el: typeof el === 'string' ? document.querySelector(el) : el, mode, cb, last: -1 });
+  const link = (anim) => { anim.pause(); return p => { anim.time = anim.duration * p; }; };
+  (function frame() {
+    const vh = innerHeight;
+    for (const t of tracks) {
+      const r = t.el.getBoundingClientRect();
+      const p = t.mode === 'pin' ? clamp(-r.top / Math.max(1, r.height - vh), 0, 1)
+              : t.mode === 'center' ? clamp((vh - r.top) / (vh * .5 + r.height * .5), 0, 1)
+              : t.mode === 'read' ? clamp((vh * .9 - r.top) / (r.height + vh * .35), 0, 1)
+              : clamp((vh - r.top) / (vh + r.height), 0, 1);
+      if (p !== t.last) { t.last = p; t.cb(p); }
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  const split = el => { el.innerHTML = [...el.textContent].map(c => c === ' ' ? ' ' : `<span class="ch">${c}</span>`).join(''); return [...el.querySelectorAll('.ch')]; };
+  document.querySelectorAll('.word').forEach(split);
+
+  /* ---------- HERO: video scrubbed by scroll + phrases (Motion) ---------- */
+  const hero = document.querySelector('.hero');
+  const video = document.getElementById('heroVideo');
+  const phrases = [...document.querySelectorAll('.phrase')];
+  const notes = [...document.querySelectorAll('.hero-note')];
+  const fill = document.getElementById('scrubFill');
+  let active = 0, heroP = 0, vTarget = 0, vCur = 0;
+
+  phrases.slice(1).forEach(p => animate(p.querySelectorAll('.ch'), { opacity: 0, filter: 'blur(14px)' }, { duration: 0 }));
+
+  const showPhrase = i => {
+    if (i === active) return;
+    const prev = phrases[active]; active = i;
+    animate(prev.querySelectorAll('.ch'), { opacity: 0, filter: 'blur(14px)', x: '-0.12em' }, { duration: .45, delay: stagger(.015), ease });
+    animate(phrases[i].querySelectorAll('.ch'),
+      { opacity: [0, 1], filter: ['blur(14px)', 'blur(0px)'], x: ['0.18em', '0em'] },
+      { duration: .8, delay: stagger(.035, { startDelay: .15 }), ease });
+    notes.forEach(n => animate(n, { opacity: +n.dataset.i === i ? 1 : 0 }, { duration: .5 }));
+  };
+  notes.forEach(n => n.style.opacity = +n.dataset.i === 0 ? 1 : 0);
+  notes.forEach(n => n.classList.add('on'));
+
+  if (reduce) { video.loop = true; video.autoplay = true; video.play().catch(() => {}); }
+  addEventListener('touchstart', () => video.play().then(() => video.pause()).catch(() => {}), { once: true, passive: true });
+
+  track(hero, 'pin', p => {
+    heroP = p;
+    fill.style.height = (p * 100) + '%';
+    if (!reduce) showPhrase(p < 0.34 ? 0 : p < 0.68 ? 1 : 2);
+    document.body.classList.toggle('past-hero', p >= 1);
+  });
+
+  // smooth the seek so scrubbing feels like a camera dolly
+  (function seek() {
+    if (!reduce && video.duration) {
+      vTarget = heroP * (video.duration - 0.05);
+      vCur += (vTarget - vCur) * 0.16;
+      if (Math.abs(video.currentTime - vCur) > 0.015) video.currentTime = vCur;
+    }
+    requestAnimationFrame(seek);
+  })();
+
+  /* ---------- THREE: drifting sea mist + embers over the hero ---------- */
+  const canvas = document.getElementById('mist');
+  if (window.THREE && !reduce) {
+    const T = THREE;
+    const renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    const scene = new T.Scene();
+    const cam = new T.PerspectiveCamera(55, 1, 0.1, 100);
+    cam.position.z = 6;
+
+    const makeSprite = (inner, outer) => {
+      const c = document.createElement('canvas'); c.width = c.height = 64;
+      const g = c.getContext('2d'); const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gr.addColorStop(0, inner); gr.addColorStop(1, outer); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+      return new T.CanvasTexture(c);
+    };
+    const field = (n, spread, size, tex, opacity) => {
+      const pos = new Float32Array(n * 3), seed = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        pos[i*3] = (Math.random() - .5) * spread; pos[i*3+1] = (Math.random() - .5) * spread * .6; pos[i*3+2] = (Math.random() - .5) * 8;
+        seed[i] = Math.random() * 100;
+      }
+      const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+      const mat = new T.PointsMaterial({ size, map: tex, transparent: true, opacity, depthWrite: false, blending: T.AdditiveBlending, sizeAttenuation: true });
+      const pts = new T.Points(geo, mat); pts.userData.seed = seed; scene.add(pts); return pts;
+    };
+    const mist = field(140, 22, 2.6, makeSprite('rgba(220,225,222,.20)', 'rgba(220,225,222,0)'), .55);
+    const embers = field(70, 9, .09, makeSprite('rgba(255,190,120,1)', 'rgba(255,140,60,0)'), .9);
+
+    const resize = () => { const w = canvas.clientWidth, h = canvas.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
+    addEventListener('resize', resize); resize();
+
+    let visible = true;
+    inView(hero, () => { visible = true; return () => { visible = false; }; });
+    const clock = new T.Clock();
+    (function loop() {
+      const t = clock.getElapsedTime();
+      if (visible) {
+        cam.position.z = 6 - heroP * 4;              // dolly forward with the video
+        mist.rotation.z = t * 0.01;
+        mist.material.opacity = .55 * (1 - heroP * .7);
+        const a = embers.geometry.attributes.position, s = embers.userData.seed;
+        for (let i = 0; i < a.count; i++) {
+          let y = a.getY(i) + 0.004 + Math.sin(t + s[i]) * 0.001;
+          if (y > 3) y = -3;
+          a.setY(i, y); a.setX(i, a.getX(i) + Math.sin(t * .5 + s[i]) * 0.002);
+        }
+        a.needsUpdate = true;
+        embers.material.opacity = .9 * (1 - heroP);
+        renderer.render(scene, cam);
+      }
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  /* ---------- AWARD: parallax + reveal ---------- */
+  const awardImg = document.getElementById('awardImg');
+  if (!reduce) {
+    track(awardImg.parentElement, 'pass', link(animate(awardImg, { scale: [1.2, 1.02], y: ['-4%', '4%'] }, { ease: 'linear' })));
+    const h2 = document.querySelector('.award-card h2');
+    inView('.award-card', () => {
+      animate(h2, { opacity: [0, 1], y: [60, 0] }, { duration: 1, ease });
+      animate('.award-card p', { opacity: [0, 1], y: [20, 0] }, { duration: .9, delay: stagger(.12, { startDelay: .2 }), ease });
+    }, { amount: .3 });
+  }
+
+  /* ---------- STAR: rotate + breathe on scroll ---------- */
+  if (!reduce) {
+    track('.star-sec', 'center', link(animate('#star', { rotate: [-45, 45], scale: [0.4, 1.1] }, { ease: 'linear' })));
+  }
+
+  /* ---------- COUNTERS ---------- */
+  inView('[data-count]', ({ target }) => {
+    if (reduce) return;
+    const end = +target.dataset.count;
+    animate(0, end, { duration: 1.6, ease: [0.16, 1, 0.3, 1], onUpdate: v => target.textContent = Math.round(v) });
+  }, { amount: .6 });
+
+  /* ---------- SHOWROOM: frame grows to full bleed ---------- */
+  const frame = document.getElementById('showFrame');
+  if (!reduce) {
+    track('.showroom', 'pin', p => {
+      const narrow = innerWidth < 760, w0 = narrow ? 86 : 66, h0 = narrow ? 52 : 56;
+      frame.style.width = (w0 + (100 - w0) * p) + 'vw';
+      frame.style.height = (h0 + (100 - h0) * p) + 'vh';
+      frame.firstElementChild.style.transform = `scale(${1.15 - p * .15})`;
+    });
+  }
+
+  /* ---------- TESTIMONIAL: words sharpen as you read ---------- */
+  const q = document.getElementById('quote');
+  q.innerHTML = q.textContent.split(' ').map(w => `<span class="w">${w}</span>`).join(' ');
+  const words = [...q.querySelectorAll('.w')];
+  if (!reduce) {
+    track(q, 'read', p => {
+      const n = p * words.length;
+      words.forEach((w, i) => { const k = clamp(n - i, 0, 1); w.style.opacity = .16 + k * .84; w.style.filter = `blur(${(1 - k) * 3}px)`; });
+    });
+  }
+
+  /* ---------- SERVICES rows ---------- */
+  if (!reduce) inView('.svc-row', ({ target }) => { animate(target, { opacity: [0, 1], y: [30, 0] }, { duration: .8, ease }); }, { amount: .4 });
+
+  /* ---------- FOOTER title rises letter by letter ---------- */
+  const fChars = split(document.getElementById('footTitle'));
+  if (!reduce) inView('.foot', () => {
+    animate(fChars, { y: ['105%', '0%'] }, { duration: 1.1, delay: stagger(.045), ease: [0.2, 0.8, 0.2, 1] });
+  }, { amount: .35 });
+
+  /* ---------- PILL label + menu ---------- */
+  const pillLabel = document.getElementById('pillLabel');
+  document.querySelectorAll('[data-label]').forEach(sec => inView(sec, () => {
+    if (pillLabel.textContent === sec.dataset.label) return;
+    animate(pillLabel, { y: [0, -14], opacity: [1, 0] }, { duration: .2 }).then(() => {
+      pillLabel.textContent = sec.dataset.label;
+      animate(pillLabel, { y: [14, 0], opacity: [0, 1] }, { duration: .3, ease });
+    });
+  }, { margin: '-50% 0px -50% 0px' }));
+
+  const menu = document.getElementById('menu'), menuBtn = document.getElementById('menuBtn'), icon = document.getElementById('menuIcon');
+  const setMenu = open => {
+    menu.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open);
+    icon.innerHTML = open ? '<path d="M6 6l12 12M18 6 6 18"/>' : '<path d="M4 8h16M4 16h16"/>';
+  };
+  menuBtn.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  const go = sel => document.querySelector(sel).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); setMenu(false); go(a.getAttribute('href')); }));
+  document.querySelector('.quote-btn').addEventListener('click', e => { e.preventDefault(); go('#contacto'); });
+  document.getElementById('pillHome').addEventListener('click', () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+  document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); });
+})();
+</script>
+
+</body>
+</html>
